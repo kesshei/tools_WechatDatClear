@@ -8,7 +8,7 @@
         xmlns:viewModels="clr-namespace:WechatClear.ViewModels"
         Title="MainWindow" Height="550" Width="700">
     <DockPanel>
-        <Grid Margin="8 0 4 4" DockPanel.Dock="Top">
+        <Grid Margin="8 0 4 4" DockPanel.Dock="Top" Height="30">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="100"/>
@@ -53,7 +53,7 @@
                                 <Image Width="16" Height="16" Margin="0,0,5,0">
                                     <Image.Style>
                                         <Style TargetType="{x:Type Image}">
-                                            <Setter Property="Source" Value="/Resources/Pane.png" />
+                                            <Setter Property="Source" Value="Resources/Pane.png" />
                                         </Style>
                                     </Image.Style>
                                 </Image>

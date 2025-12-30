@@ -49,14 +49,16 @@ namespace WechatClear.ViewModels
                     this.multimediaType = MultimediaType.Other;
                 }
 
-
-                BitmapImage bitmap = new BitmapImage();
-                bitmap.BeginInit();
-                bitmap.CacheOption = BitmapCacheOption.OnLoad;
-                bitmap.UriSource = new Uri(Path);
-                bitmap.EndInit();
-                this.Bitmap = bitmap;
-                this.IsLoaded = true;
+                if (this.multimediaType == MultimediaType.Image)
+                {
+                    BitmapImage bitmap = new BitmapImage();
+                    bitmap.BeginInit();
+                    bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                    bitmap.UriSource = new Uri(Path);
+                    bitmap.EndInit();
+                    this.Bitmap = bitmap;
+                    this.IsLoaded = true;
+                }
             }
             else
             {

@@ -18,10 +18,12 @@ namespace WechatClear
     /// </summary>
     public partial class MainWindow : Window
     {
+        private MainViewModel _vm;
         public MainWindow()
         {
             InitializeComponent();
-            DataContext = new MainViewModel();
+            _vm = new MainViewModel();
+            DataContext = _vm;
         }
 
         private void TreeViewItem_Selected(object sender, RoutedEventArgs e)
@@ -63,7 +65,7 @@ namespace WechatClear
             {
                 // 将选中的路径赋值给文本框显示
                 txtFolderPath.Text = folderDialog.FolderName;
-
+                _vm.Initialize(folderDialog.FolderName);
             }
         }
     }
