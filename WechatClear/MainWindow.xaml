@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:WechatClear"
         mc:Ignorable="d"
         xmlns:viewModels="clr-namespace:WechatClear.ViewModels"
-        Title="MainWindow" Height="550" Width="700">
+        Title="MainWindow" Height="550" Width="900">
     <DockPanel>
         <Grid Margin="8 0 4 4" DockPanel.Dock="Top" Height="30">
             <Grid.ColumnDefinitions>
@@ -28,7 +28,7 @@
         </Grid>
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="282"/>
                 <ColumnDefinition Width="5"/>
                 <ColumnDefinition Width="1*"/>
             </Grid.ColumnDefinitions>
