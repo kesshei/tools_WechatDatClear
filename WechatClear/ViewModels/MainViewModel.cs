@@ -18,6 +18,7 @@ namespace WechatClear.ViewModels
         public MainViewModel()
         {
             Elements = new ObservableCollection<ElementViewModel>();
+            ImageZoom = 20;
         }
         public ObservableCollection<ElementViewModel> Elements { get; private set; }
         public ObservableCollection<DetailViewModel> SelectedItemDetails => SelectedItemInTree?.ItemDetails;
@@ -25,6 +26,11 @@ namespace WechatClear.ViewModels
         public ElementViewModel SelectedItemInTree
         {
             get { return GetProperty<ElementViewModel>(); }
+            private set { SetProperty(value); }
+        }
+        public double ImageZoom
+        {
+            get { return GetProperty<double>(); }
             private set { SetProperty(value); }
         }
         public void Initialize(string dir)
