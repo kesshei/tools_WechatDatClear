@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using WechatClear.Core;
@@ -14,6 +15,14 @@ namespace WechatClear.ViewModels
     {
         public DetailViewModel(string path)
         {
+            Action_ImagesSelect = new RelayCommand(o =>
+            {
+                this.IsSelected = !this.IsSelected;
+            });
+            Action_Delete = new RelayCommand(o =>
+            {
+                this.IsDeleted = true;
+            });
             this.Path = path;
             Process();
         }
@@ -35,12 +44,17 @@ namespace WechatClear.ViewModels
         }
         public MultimediaType multimediaType { get; private set; }
         public BitmapImage Bitmap { get; private set; }
+
+        public ICommand Action_ImagesSelect { get; private set; }
+
+        public ICommand Action_Delete { get; private set; }
+
         public bool IsLoaded
         {
             get { return GetProperty<bool>(); }
             set { SetProperty(value); }
         }
-        public bool IsSelected  
+        public bool IsSelected
         {
             get { return GetProperty<bool>(); }
             set { SetProperty(value); }
