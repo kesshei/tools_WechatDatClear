@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Automation;
+using System.Windows.Input;
 using WechatClear.Core;
 
 namespace WechatClear.ViewModels
@@ -19,10 +20,33 @@ namespace WechatClear.ViewModels
         {
             Elements = new ObservableCollection<ElementViewModel>();
             ImageZoom = 20;
+            Action_ImagesDelete = new RelayCommand(o =>
+            {
+                if (SelectedItemDetails != null)
+                {
+                    var toDelete = SelectedItemDetails.Where(d => d.IsSelected).ToList();
+                    foreach (var detail in toDelete)
+                    {
+                        try
+                        {
+                            detail.IsDeleted = true;
+                            //if (File.Exists(detail.Path))
+                            //{
+                            //    File.Delete(detail.Path);
+                            //}
+                            SelectedItemInTree.ItemDetails.Remove(detail);
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine($"Error deleting file {detail.Path}: {ex.Message}");
+                        }
+                    }
+                }
+            });
         }
         public ObservableCollection<ElementViewModel> Elements { get; private set; }
         public ObservableCollection<DetailViewModel> SelectedItemDetails => SelectedItemInTree?.ItemDetails;
-
+        public ICommand Action_ImagesDelete { get; private set; }   
         public ElementViewModel SelectedItemInTree
         {
             get { return GetProperty<ElementViewModel>(); }

@@ -10,7 +10,13 @@
     Title="MainWindow"
     Width="1020"
     Height="550"
+    Focusable="True"
     mc:Ignorable="d">
+    <i:Interaction.Triggers>
+        <i:KeyTrigger Key="Delete">
+            <i:InvokeCommandAction Command="{Binding Action_ImagesDelete}" />
+        </i:KeyTrigger>
+    </i:Interaction.Triggers>
     <DockPanel>
         <Grid
             Height="30"
@@ -76,7 +82,10 @@
                 </TreeView>
             </GroupBox>
             <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" />
-            <ScrollViewer Grid.Column="2" VerticalScrollBarVisibility="Auto">
+            <ScrollViewer
+                Grid.Column="2"
+                HorizontalScrollBarVisibility="Disabled"
+                VerticalScrollBarVisibility="Auto">
                 <ItemsControl ItemsSource="{Binding SelectedItemDetails}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
