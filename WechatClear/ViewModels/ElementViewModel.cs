@@ -28,23 +28,8 @@ namespace WechatClear.ViewModels
                 {
                     if (value)
                     {
-                        // Async load details
-                        var unused = Task.Run(() =>
-                        {
-                            var details = LoadDetails();
-                            return details;
-                        }).ContinueWith(items =>
-                        {
-                            if (items.IsFaulted)
-                            {
-                                if (items.Exception != null)
-                                {
-                                    MessageBox.Show(items.Exception.ToString());
-                                }
-                            }
-                            ItemDetails.Reset(items.Result);
-                        }, TaskScheduler.FromCurrentSynchronizationContext());
-
+                        var details = LoadDetails();
+                        ItemDetails.Reset(details);
                         // Fire the selection event
                         SelectionChanged?.Invoke(this);
                     }

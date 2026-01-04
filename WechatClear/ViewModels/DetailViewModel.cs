@@ -19,9 +19,28 @@ namespace WechatClear.ViewModels
         }
 
         public string Path { get; }
+        public string RealPath
+        {
+            get
+            {
+                if (File.Exists(Path))
+                {
+                    return Path;
+                }
+                else
+                {
+                    return "Resources/temp.jpg";
+                }
+            }
+        }
         public MultimediaType multimediaType { get; private set; }
         public BitmapImage Bitmap { get; private set; }
         public bool IsLoaded
+        {
+            get { return GetProperty<bool>(); }
+            set { SetProperty(value); }
+        }
+        public bool IsSelected  
         {
             get { return GetProperty<bool>(); }
             set { SetProperty(value); }
@@ -33,37 +52,29 @@ namespace WechatClear.ViewModels
         }
         private void Process()
         {
-            if (File.Exists(Path))
+            string extension = System.IO.Path.GetExtension(Path).ToLower();
+            if (extension == ".png" || extension == ".jpg" || extension == ".jpeg" || extension == ".bmp" || extension == ".gif")
             {
-                string extension = System.IO.Path.GetExtension(Path).ToLower();
-                if (extension == ".png" || extension == ".jpg" || extension == ".jpeg" || extension == ".bmp" || extension == ".gif")
-                {
-                    this.multimediaType = MultimediaType.Image;
-                }
-                else if (extension == ".mp4" || extension == ".avi" || extension == ".mov" || extension == ".wmv" || extension == ".mkv")
-                {
-                    this.multimediaType = MultimediaType.Video;
-                }
-                else
-                {
-                    this.multimediaType = MultimediaType.Other;
-                }
-
-                if (this.multimediaType == MultimediaType.Image)
-                {
-                    BitmapImage bitmap = new BitmapImage();
-                    bitmap.BeginInit();
-                    bitmap.CacheOption = BitmapCacheOption.OnLoad;
-                    bitmap.UriSource = new Uri(Path);
-                    bitmap.EndInit();
-                    this.Bitmap = bitmap;
-                    this.IsLoaded = true;
-                }
+                this.multimediaType = MultimediaType.Image;
+            }
+            else if (extension == ".mp4" || extension == ".avi" || extension == ".mov" || extension == ".wmv" || extension == ".mkv")
+            {
+                this.multimediaType = MultimediaType.Video;
             }
             else
             {
-                this.Bitmap = null;
-                this.IsLoaded = false;
+                this.multimediaType = MultimediaType.Other;
+            }
+
+            if (this.multimediaType == MultimediaType.Image)
+            {
+                BitmapImage bitmap = new BitmapImage();
+                bitmap.BeginInit();
+                bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                bitmap.UriSource = new Uri(RealPath);
+                bitmap.EndInit();
+                this.Bitmap = bitmap;
+                this.IsLoaded = true;
             }
         }
     }
