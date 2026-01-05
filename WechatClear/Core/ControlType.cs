@@ -11,6 +11,7 @@ namespace WechatClear.Core
         Image,
         Video,
         Document,
+        Dat,
         Other
     }
 }

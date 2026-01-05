@@ -11,7 +11,7 @@ using WechatClear.Core;
 
 namespace WechatClear.ViewModels
 {
-    public class DetailViewModel : ObservableObject
+    public class DetailViewModel : ObservableObject, IDisposable
     {
         public DetailViewModel(string path)
         {
@@ -75,6 +75,14 @@ namespace WechatClear.ViewModels
             {
                 this.multimediaType = MultimediaType.Video;
             }
+            else if (extension == ".pdf" || extension == ".doc" || extension == ".docx" || extension == ".xls" || extension == ".xlsx" || extension == ".ppt" || extension == ".pptx" || extension == ".txt")
+            {
+                this.multimediaType = MultimediaType.Document;
+            }
+            else if (extension == ".dat")
+            {
+                this.multimediaType = MultimediaType.Dat;
+            }
             else
             {
                 this.multimediaType = MultimediaType.Other;
@@ -82,14 +90,58 @@ namespace WechatClear.ViewModels
 
             if (this.multimediaType == MultimediaType.Image)
             {
-                BitmapImage bitmap = new BitmapImage();
-                bitmap.BeginInit();
-                bitmap.CacheOption = BitmapCacheOption.OnLoad;
-                bitmap.UriSource = new Uri(RealPath);
-                bitmap.EndInit();
+                BitmapImage bitmap = CreateBitmapImageFromBytes(File.ReadAllBytes(this.RealPath));
                 this.Bitmap = bitmap;
                 this.IsLoaded = true;
             }
+            else if (this.multimediaType == MultimediaType.Dat)
+            {
+                var data = File.ReadAllBytes(this.RealPath);
+                var decodedData = Common.WeChatDecode.Decode(data);
+                BitmapImage bitmap = CreateBitmapImageFromBytes(decodedData);
+                this.Bitmap = bitmap;
+                this.IsLoaded = true;
+            }
+        }
+        /// <summary>
+        /// 从字节数组创建BitmapImage（核心方法）
+        /// </summary>
+        /// <param name="imageBytes">图片字节数组</param>
+        /// <returns>内存创建的BitmapImage</returns>
+        private static BitmapImage CreateBitmapImageFromBytes(byte[] imageBytes)
+        {
+            if (imageBytes == null || imageBytes.Length == 0)
+            {
+                throw new ArgumentException("图片字节数组不能为空或长度为0");
+            }
+
+            // 关键：使用using包裹MemoryStream，避免内存泄漏
+            using (MemoryStream ms = new MemoryStream(imageBytes))
+            {
+                BitmapImage bitmap = new BitmapImage();
+                // 必须先设置CacheOption为OnLoad，否则流关闭后图片无法加载
+                bitmap.BeginInit();
+                bitmap.StreamSource = ms;
+                bitmap.CacheOption = BitmapCacheOption.OnLoad; // 核心配置：加载时缓存，流关闭后仍可用
+                bitmap.EndInit();
+                bitmap.Freeze(); // 可选：冻结对象，提升性能（不可再修改）
+                return bitmap;
+            }
+        }
+
+        void IDisposable.Dispose()
+        {
+            if (Bitmap == null) return;
+
+            if (Bitmap.StreamSource != null)
+            {
+                Bitmap.StreamSource.Dispose();
+            }
+
+            Bitmap = null;
+
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
         }
     }
 }

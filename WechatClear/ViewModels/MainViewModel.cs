@@ -27,26 +27,51 @@ namespace WechatClear.ViewModels
                     var toDelete = SelectedItemDetails.Where(d => d.IsSelected).ToList();
                     foreach (var detail in toDelete)
                     {
-                        try
-                        {
-                            detail.IsDeleted = true;
-                            //if (File.Exists(detail.Path))
-                            //{
-                            //    File.Delete(detail.Path);
-                            //}
-                            SelectedItemInTree.ItemDetails.Remove(detail);
-                        }
-                        catch (Exception ex)
-                        {
-                            Debug.WriteLine($"Error deleting file {detail.Path}: {ex.Message}");
-                        }
+                        DeleteSelectedItemInTree(detail);
+                    }
+                }
+            });
+            Action_DeleteAllItems = new RelayCommand(o =>
+            {
+                if (SelectedItemDetails != null)
+                {
+                    foreach (var detail in SelectedItemDetails.ToList())
+                    {
+                        DeleteSelectedItemInTree(detail);
                     }
                 }
             });
         }
+        public void DeleteSelectedItemInTree(DetailViewModel detail)
+        {
+            try
+            {
+                detail.IsDeleted = true;
+
+                if (File.Exists(detail.Path))
+                {
+                    FileAttributes attributes = File.GetAttributes(detail.Path);
+                    if ((attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
+                    {
+                        attributes &= ~FileAttributes.ReadOnly;
+                        File.SetAttributes(detail.Path, attributes);
+                    }
+                    using (detail)
+                    {
+                        File.Delete(detail.Path);
+                    }
+                }
+                SelectedItemInTree.ItemDetails.Remove(detail);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error deleting file {detail.Path}: {ex.Message}");
+            }
+        }
         public ObservableCollection<ElementViewModel> Elements { get; private set; }
         public ObservableCollection<DetailViewModel> SelectedItemDetails => SelectedItemInTree?.ItemDetails;
-        public ICommand Action_ImagesDelete { get; private set; }   
+        public ICommand Action_ImagesDelete { get; private set; }
+        public ICommand Action_DeleteAllItems { get; private set; }
         public ElementViewModel SelectedItemInTree
         {
             get { return GetProperty<ElementViewModel>(); }
