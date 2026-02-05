@@ -28,10 +28,7 @@ namespace WechatClear.ViewModels
                 {
                     if (value)
                     {
-                        var details = LoadDetails();
-                        ItemDetails.Reset(details);
-                        // Fire the selection event
-                        SelectionChanged?.Invoke(this);
+                        LoadDetailsAsync();
                     }
 
                     SetProperty(value);
@@ -43,6 +40,24 @@ namespace WechatClear.ViewModels
             }
         }
 
+        /// <summary>
+        /// 异步加载详情数据（核心优化点）
+        /// </summary>
+        /// <returns></returns>
+        private async Task LoadDetailsAsync()
+        {
+            try
+            {
+                var details = await Task.Run(() => LoadDetails()); // 避免阻塞UI线程
+                ItemDetails.Reset(details);
+                SelectionChanged?.Invoke(this); // 确保事件在详情加载完成后触发
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Trace.TraceError($"加载详情失败: {ex}");
+                ItemDetails.Reset(null); // 异常时清空详情，保证状态干净
+            }
+        }
         public bool IsExpanded
         {
             get { return GetProperty<bool>(); }

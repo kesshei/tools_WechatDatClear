@@ -30,6 +30,7 @@ namespace WechatClear.ViewModels
                         DeleteSelectedItemInTree(detail);
                     }
                 }
+                ClearMem();
             });
             Action_DeleteAllItems = new RelayCommand(o =>
             {
@@ -40,6 +41,7 @@ namespace WechatClear.ViewModels
                         DeleteSelectedItemInTree(detail);
                     }
                 }
+                ClearMem();
             });
         }
         public void DeleteSelectedItemInTree(DetailViewModel detail)
@@ -67,6 +69,12 @@ namespace WechatClear.ViewModels
             {
                 Debug.WriteLine($"Error deleting file {detail.Path}: {ex.Message}");
             }
+        }
+        public void ClearMem()
+        {
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
         }
         public ObservableCollection<ElementViewModel> Elements { get; private set; }
         public ObservableCollection<DetailViewModel> SelectedItemDetails => SelectedItemInTree?.ItemDetails;

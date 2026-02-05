@@ -12,7 +12,8 @@ namespace WechatClear.Common
         static Dictionary<byte[], string> map = new Dictionary<byte[], string>() {
             { new byte[]{0xFF,0xD8 },"jpg" },
             { new byte[]{0x89,0x50 },"png" },
-            { new byte[]{0x47,0x49 },"gif" }
+            { new byte[]{0x47,0x49 },"gif" },
+            { new byte[]{0x42,0x4d },"bmp" }
         };
         public static byte[] Decode(byte[] data, int offset = 0)
         {

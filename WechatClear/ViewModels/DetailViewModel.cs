@@ -98,9 +98,16 @@ namespace WechatClear.ViewModels
             {
                 var data = File.ReadAllBytes(this.RealPath);
                 var decodedData = Common.WeChatDecode.Decode(data);
-                BitmapImage bitmap = CreateBitmapImageFromBytes(decodedData);
-                this.Bitmap = bitmap;
-                this.IsLoaded = true;
+                try
+                {
+                    BitmapImage bitmap = CreateBitmapImageFromBytes(decodedData);
+                    this.Bitmap = bitmap;
+                    this.IsLoaded = true;
+                }
+                catch (Exception ex)
+                {
+                    throw;
+                }
             }
         }
         /// <summary>
